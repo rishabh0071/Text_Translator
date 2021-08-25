@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+body{
+    background-image:linear-gradient(rgba(0,168,255,0.3),rgba(0,168,255,0.3)) ;
+    text-align:center;
+    justify-content:center;
+    align-items:center;
+    margin-top:15%;
+    font-size: xx-large;
+    
+}
+
+#btnSpeak{
+    border:5px solid lightblue;
+    border-radius: 20px;
+    padding: 25px;
+}
+#voiceList{
+    margin-top: 15px;
+    height:auto;
+    letter-spacing: 1px;
+    border:4px solid lightblue;
+}
+.cont{
+    margin-top: 50px;
+}
+
+
+</style>
+<body>
+    <div>
+        <div class='cont'>
+    Select voice: <select  name="" id="voiceList"></select>
+    <br><br>
+    <input type="text" id="txtInput"/>
+    <br><br>
+    <button  id="btnSpeak">SPEAK!</button>
+    </div>
+    </div>
+    <script>
+    var voiceList=document.querySelector('#voiceList');
+    var txtInput=document.querySelector('#txtInput');
+    var btnSpeak=document.querySelector('#btnSpeak');
+    
+    var tts=window.speechSynthesis;
+    var voices=[];
+
+    GetVoices();
+
+    if(speechSynthesis !== undefined)
+    {
+        speechSynthesis.onvoiceschanged = GetVoices;
+    }
+
+    btnSpeak.addEventListener('click',()=>{
+        var toSpeak=new SpeechSynthesisUtterance(txtInput.value);
+        var selectedVoiceName=voiceList.selectedOptions[0].getAttribute('data-name');
+        voices.forEach((voice)=>{
+            if(voice.name===selectedVoiceName){
+                toSpeak.voice=voice;
+            }
+        });
+        tts.speak(toSpeak);
+    });
+
+    function GetVoices()
+    {
+        voices=tts.getVoices();
+        voiceList.innerHTML='';
+        voices.forEach((voice)=>{
+            var listItem=document.createElement('option');
+            listItem.textContent=voice.name;
+            listItem.setAttribute('data-lang',voice.lang);
+            listItem.setAttribute('data-name',voice.name);
+            voiceList.appendChild(listItem);
+
+
+        });
+        voiceList.selectedIndex=0;
+    }
+    
+    </script>
+</body>
+</html>
